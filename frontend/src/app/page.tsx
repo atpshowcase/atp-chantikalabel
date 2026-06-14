@@ -1,62 +1,124 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+
+"use client";
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Link from 'next/link';
 import { Search, Heart, User, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import story from "@/assets/story.jpg";
-import sp1 from "@/assets/ai/p1.jpg";
-import sp2 from "@/assets/ai/p2.jpg";
-import sp3 from "@/assets/ai/p3.jpg";
-import sp4 from "@/assets/ai/p4.jpg";
-import sp5 from "@/assets/ai/p5.jpg";
-import sp6 from "@/assets/ai/p6.jpg";
-import sp7 from "@/assets/ai/p7.jpg";
-import sp8 from "@/assets/ai/p8.jpg";
-import sp9 from "@/assets/ai/p9.jpg";
-import sp10 from "@/assets/ai/p10.jpg";
+import sp1 from "@/assets/ai/sp1.png";
+import sp2 from "@/assets/ai/sp2.png";
+import sp4 from "@/assets/ai/sp4.png";
+import sp6 from "@/assets/ai/sp6.png";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Chantika Label — Khimar, Handsock & Kaos Kaki Muslimah" },
-      { name: "description", content: "Chantika Label menghadirkan khimar arabian crepe, handsock, dan kaos kaki muslimah berkualitas premium. Nyaman, syar'i, dan timeless." },
-      { property: "og:title", content: "Chantika Label — Modest Essentials" },
-      { property: "og:description", content: "Khimar, handsock, dan kaos kaki muslimah berkualitas premium." },
-    ],
-    links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300;400;500;600&display=swap",
-      },
-    ],
-  }),
-  component: Home,
-});
 
 const shopeeUrl = "https://shopee.co.id/chantikalabel";
 
 const products = [
-  { img: sp1, name: "Handsock Daily Jersey Malay", price: "Rp 19.999", tag: "Bestseller" },
-  { img: sp2, name: "Moslema Socks Thumb Basic Polos", price: "Rp 12.399" },
-  { img: sp3, name: "Moslema Socks Thumb Polka Telapak Hitam", price: "Rp 11.999" },
-  { img: sp4, name: "Inner Bandana by Chantika Label", price: "Rp 14.499", tag: "New" },
-  { img: sp5, name: "Basic Handsock by Chantika Label", price: "Rp 20.999", tag: "Bestseller" },
-  { img: sp6, name: "Handsock Seamless by Chantika Label", price: "Rp 17.999" },
-  { img: sp7, name: "Handsock Basic x Tencel Cloud Modal", price: "Rp 31.999", tag: "Bestseller" },
-  { img: sp8, name: "Handsock Thumbhole by Chantika Label", price: "Rp 19.999" },
-  { img: sp9, name: "Basic Handsock Malay", price: "Rp 20.999" },
-  { img: sp10, name: "Moslema Socks Thumb Basic", price: "Rp 12.399", tag: "New" },
+  { img: sp1, name: "Khimar Sifon Arab Jetblack", price: "Rp 65.000", tag: "Bestseller" },
+  { img: sp2, name: "Cadar Tali Sifon Arab 2 Layer", price: "Rp 15.000" },
+  { img: sp2, name: "Niqab Bandana Poni Sifon Arab", price: "Rp 25.000" },
+  { img: sp4, name: "French Khimar Sifon Premium", price: "Rp 85.000", tag: "New" },
+  { img: sp1, name: "Khimar Sifon Arab 2 Layer", price: "Rp 70.000", tag: "Bestseller" },
+  { img: sp6, name: "Cadar Elang Sifon Arab", price: "Rp 20.000" },
+  { img: sp6, name: "Khimar Instan Jumbo Sifon", price: "Rp 75.000", tag: "Bestseller" },
+  { img: sp1, name: "Cadar Tali Kerut Sifon", price: "Rp 18.000" },
+  { img: sp1, name: "Niqab Butterfly Sifon Arab", price: "Rp 35.000" },
+  { img: sp2, name: "Paket Khimar & Cadar", price: "Rp 80.000", tag: "New" },
 ];
 
 const categories = [
-  { label: "Handsock", img: sp1 },
-  { label: "Inner & Ciput", img: sp4 },
-  { label: "Kaos Kaki Muslimah", img: sp2 },
-  { label: "Seamless", img: sp6 },
+  { label: "Khimar", img: sp1 },
+  { label: "French Khimar", img: sp4 },
+  { label: "Cadar Tali", img: sp2 },
+  { label: "Niqab Bandana", img: sp6 },
 ];
 
-function Home() {
+export default function Home() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const productsRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLElement>(null);
+  const storyImgRef = useRef<HTMLImageElement>(null);
+  const storyTextRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // Hero fade up
+      if (heroContentRef.current) {
+        gsap.fromTo(
+          heroContentRef.current.children,
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 0.2 }
+        );
+      }
+
+      // Hero image parallax
+      if (heroRef.current) {
+        gsap.to(heroRef.current, {
+          yPercent: 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+      }
+
+      // Categories stagger
+      if (categoryRef.current) {
+        gsap.fromTo(
+          categoryRef.current.children,
+          { y: 50, opacity: 0 },
+          { 
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power2.out",
+            scrollTrigger: { trigger: categoryRef.current, start: "top 80%" }
+          }
+        );
+      }
+
+      // Products stagger
+      if (productsRef.current) {
+        gsap.fromTo(
+          productsRef.current.children,
+          { y: 50, opacity: 0 },
+          { 
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out",
+            scrollTrigger: { trigger: productsRef.current, start: "top 85%" }
+          }
+        );
+      }
+
+      // Story Parallax & Text fade
+      if (storyRef.current && storyImgRef.current && storyTextRef.current) {
+        gsap.fromTo(
+          storyImgRef.current,
+          { scale: 1.1 },
+          { 
+            scale: 1, duration: 1.5, ease: "power2.out",
+            scrollTrigger: { trigger: storyRef.current, start: "top 70%" }
+          }
+        );
+        gsap.fromTo(
+          storyTextRef.current.children,
+          { y: 30, opacity: 0 },
+          { 
+            y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power2.out",
+            scrollTrigger: { trigger: storyRef.current, start: "top 60%" }
+          }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Announcement */}
@@ -71,34 +133,33 @@ function Home() {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-4 sm:px-8">
           <nav className="hidden items-center gap-6 text-sm tracking-wide md:flex">
             <a href="#shop" className="hover:text-accent">Koleksi</a>
-            <Link to="/reseller" className="hover:text-accent">Reseller</Link>
-            <Link to="/faq" className="hover:text-accent">FAQ</Link>
-            <Link to="/about" className="hover:text-accent">Tentang</Link>
+            <Link href="/reseller" className="hover:text-accent">Reseller</Link>
+            <Link href="/faq" className="hover:text-accent">FAQ</Link>
+            <Link href="/about" className="hover:text-accent">Tentang</Link>
           </nav>
-          <Link to="/" className="font-display text-2xl tracking-tight">Chantika <span className="italic text-accent">Label</span></Link>
+          <Link href="/" className="font-display text-2xl tracking-tight">Chantika <span className="italic text-accent">Label</span></Link>
           <div className="flex items-center gap-4">
-            <Link to="/size-guide" className="hidden text-sm hover:text-accent md:inline">Panduan Ukuran</Link>
-            <Link to="/care" className="hidden text-sm hover:text-accent md:inline">Perawatan</Link>
-            <Link to="/contact" className="hidden text-sm hover:text-accent md:inline">Kontak</Link>
-            <button aria-label="search" className="hover:text-accent"><Search className="h-5 w-5" /></button>
-            <button aria-label="wishlist" className="hover:text-accent"><Heart className="h-5 w-5" /></button>
-            <button aria-label="account" className="hover:text-accent"><User className="h-5 w-5" /></button>
-            <button aria-label="bag" className="hover:text-accent"><ShoppingBag className="h-5 w-5" /></button>
+            <Link href="/size-guide" className="hidden text-sm hover:text-accent md:inline">Panduan Ukuran</Link>
+            <Link href="/care" className="hidden text-sm hover:text-accent md:inline">Perawatan</Link>
+            <Link href="/contact" className="hidden text-sm hover:text-accent md:inline">Kontak</Link>
+            
           </div>
         </div>
       </header>
 
       {/* Hero */}
       <section className="relative h-[78vh] min-h-[520px] w-full overflow-hidden">
-        <img src={hero} alt="Koleksi Chantika Label" className="absolute inset-0 h-full w-full object-cover" width={1920} height={1080} />
+        <div ref={heroRef} className="absolute inset-0 h-full w-full">
+          <img src={hero.src} alt="Koleksi Chantika Label" className="h-full w-full object-cover" width={1920} height={1080} />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-black/40" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-primary-foreground">
-          <p className="mb-4 text-xs uppercase tracking-[0.3em] opacity-90">Koleksi Musim Ini</p>
+        <div ref={heroContentRef} className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-primary-foreground">
+          <p className="mb-4 text-xs uppercase tracking-[0.3em] opacity-90">Koleksi Sifon Arab</p>
           <h1 className="font-display text-5xl italic leading-tight sm:text-6xl md:text-7xl lg:text-8xl">
-            Lembut sebagai <br />pagi di Bogor
+            Syar'i Elegan, <br />Harga Teman
           </h1>
           <p className="mt-6 max-w-md text-sm opacity-90 sm:text-base">
-            Kain ringan, potongan flowy, palet hangat — busana modest yang dibuat untuk hari-hari Anda.
+            Pusat khimar dan cadar bahan Sifon Arab berkualitas. Jatuh sempurna, tidak pengap, dan termurah.
           </p>
           <a href="#shop" className="mt-8 inline-flex items-center justify-center border border-primary-foreground bg-transparent px-10 py-3 text-xs uppercase tracking-[0.25em] transition hover:bg-primary-foreground hover:text-primary">
             Belanja Sekarang
@@ -112,11 +173,11 @@ function Home() {
           <h2 className="font-display text-3xl italic sm:text-5xl">Kategori</h2>
           <a href="#shop" className="text-xs uppercase tracking-[0.25em] underline-offset-4 hover:underline">Lihat semua</a>
         </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+        <div ref={categoryRef} className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
           {categories.map((c) => (
             <a key={c.label} href="#shop" className="group block">
               <div className="aspect-[3/4] overflow-hidden bg-muted">
-                <img src={c.img} alt={c.label} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                <img src={c.img.src} alt={c.label} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
               </div>
               <p className="mt-4 text-center font-display text-xl italic">{c.label}</p>
             </a>
@@ -130,11 +191,11 @@ function Home() {
           <p className="mb-3 text-xs uppercase tracking-[0.3em] text-muted-foreground">Bestseller</p>
           <h2 className="font-display text-4xl italic sm:text-5xl">Favorit dari Chantika</h2>
         </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 lg:grid-cols-3">
+        <div ref={productsRef} className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 lg:grid-cols-3">
           {products.map((p) => (
             <article key={p.name} className="group">
               <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-                <img src={p.img} alt={p.name} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
+                <img src={p.img.src} alt={p.name} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
                 {p.tag && (
                   <span className="absolute left-3 top-3 bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-foreground">{p.tag}</span>
                 )}
@@ -155,20 +216,18 @@ function Home() {
       </section>
 
       {/* Story / Editorial split */}
-      <section id="story" className="bg-secondary">
+      <section id="story" ref={storyRef} className="bg-secondary">
         <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-0 md:grid-cols-2">
-          <div className="aspect-[4/5] md:aspect-auto">
-            <img src={story} alt="Cerita Chantika" loading="lazy" className="h-full w-full object-cover" />
+          <div className="aspect-[4/5] overflow-hidden md:aspect-auto">
+            <img ref={storyImgRef} src={story.src} alt="Cerita Chantika" loading="lazy" className="h-full w-full object-cover" />
           </div>
-          <div className="flex flex-col justify-center px-8 py-16 md:px-16">
+          <div ref={storyTextRef} className="flex flex-col justify-center px-8 py-16 md:px-16">
             <p className="mb-4 text-xs uppercase tracking-[0.3em] text-accent">Cerita Kami</p>
-            <h2 className="font-display text-4xl italic leading-tight sm:text-5xl">Dibuat dengan cinta dari Bogor</h2>
+            <h2 className="font-display text-4xl italic leading-tight sm:text-5xl">Kualitas Premium, Termurah di Kelasnya</h2>
             <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Chantika Label lahir dari kecintaan pada kain yang jatuh sempurna, potongan yang
-              memeluk dengan lembut, dan warna-warna yang bicara tanpa berteriak. Setiap helai
-              dijahit oleh penjahit lokal kami di Bogor — perlahan, penuh perhatian, dan penuh rasa.
+              Berawal dari keinginan untuk menghadirkan pakaian syar'i yang terjangkau namun berkualitas tinggi, Chantika Label mendedikasikan diri khusus pada material Sifon Arab asli. Khimar dan cadar kami dirancang agar sangat ringan, *breathable*, dan elegan, membantumu istiqomah tanpa mengorbankan kenyamanan.
             </p>
-            <Link to="/about" className="mt-8 inline-flex w-fit items-center justify-center border border-primary bg-transparent px-10 py-3 text-xs uppercase tracking-[0.25em] text-primary transition hover:bg-primary hover:text-primary-foreground">
+            <Link href="/about" className="mt-8 inline-flex w-fit items-center justify-center border border-primary bg-transparent px-10 py-3 text-xs uppercase tracking-[0.25em] text-primary transition hover:bg-primary hover:text-primary-foreground">
               Pelajari Lebih Lanjut
             </Link>
           </div>
@@ -199,7 +258,7 @@ function Home() {
         <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-10 px-4 py-16 sm:px-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <p className="font-display text-2xl">Chantika <span className="italic text-accent">Label</span></p>
-            <p className="mt-4 text-sm text-muted-foreground">Modest fashion. Made slow, worn often.</p>
+            <p className="mt-4 text-sm text-muted-foreground">Pusat Khimar & Cadar Sifon Arab Termurah.</p>
           </div>
           <div>
             <h4 className="mb-4 text-xs uppercase tracking-[0.25em]">Belanja</h4>
@@ -213,11 +272,11 @@ function Home() {
           <div>
             <h4 className="mb-4 text-xs uppercase tracking-[0.25em]">Bantuan</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/faq" className="hover:text-foreground">FAQ</Link></li>
-              <li><Link to="/size-guide" className="hover:text-foreground">Panduan Ukuran</Link></li>
-              <li><Link to="/care" className="hover:text-foreground">Cara Perawatan</Link></li>
-              <li><Link to="/reseller" className="hover:text-foreground">Reseller</Link></li>
-              <li><Link to="/contact" className="hover:text-foreground">Kontak</Link></li>
+              <li><Link href="/faq" className="hover:text-foreground">FAQ</Link></li>
+              <li><Link href="/size-guide" className="hover:text-foreground">Panduan Ukuran</Link></li>
+              <li><Link href="/care" className="hover:text-foreground">Cara Perawatan</Link></li>
+              <li><Link href="/reseller" className="hover:text-foreground">Reseller</Link></li>
+              <li><Link href="/contact" className="hover:text-foreground">Kontak</Link></li>
             </ul>
           </div>
           <div>
